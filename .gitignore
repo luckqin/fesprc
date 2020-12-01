@@ -5,3 +5,4 @@ site/node_modules
 site/dist
 yarn.lock
 package.lock
+.DS_Store

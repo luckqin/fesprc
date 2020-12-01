@@ -50,7 +50,8 @@ yarn dev:css
 yarn dev
 ```
 
-**可在 site 中写 React 代码调试组件**
+可在 site 中写 React 代码调试组件
+
 通过 `import { Component } from 'PATH/TO/es'` 的方式引入组件
 通过 `import 'PATH/TO/css/component.css'` 的方式引入样式
 

@@ -3,3 +3,5 @@ es
 css
 site/node_modules
 site/dist
+yarn.lock
+package.lock

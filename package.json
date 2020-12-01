@@ -8,8 +8,15 @@
     "dev:es": "./scripts/build-ts.sh --dev",
     "dev:style": "./scripts/build-style.sh --dev",
     "dev": "cd site && yarn dev",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.vue .",
-    "precommit": "lint-staged"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx,.vue ."
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,vue}": "eslint"
   },
   "dependencies": {
     "big.js": "^5.2.2",

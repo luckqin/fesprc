@@ -13,5 +13,6 @@ module.exports = {
   rules: {
     'no-console': 1,
     '@typescript-eslint/no-empty-function': 0,
+    'react/prop-types': 0,
   },
 };

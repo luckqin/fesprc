@@ -1,3 +1,51 @@
-a {
-color: 2;
+@import './animation/zoom';
+
+$z-index: 1000;
+
+.dm-dialog-mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(black, 0.6);
+  height: 100%;
+  z-index: $z-index;
+}
+
+.dm-dialog-wrapper {
+  position: fixed;
+  display: table-cell;
+  overflow: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: $z-index;
+  outline: 0;
+  text-align: center;
+  font-size: 0;
+  white-space: nowrap;
+
+  &::before {
+    content: '';
+    height: 100%;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.dm-dialog {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: initial;
+  border-radius: 4px;
+  padding: 16px 0;
+  box-sizing: border-box;
+  white-space: normal;
+  background-color: #fff;
+  min-width: 400px;
+  min-height: 100px;
+  max-width: 70%;
 }

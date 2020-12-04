@@ -1,132 +1,68 @@
 import * as React from 'react';
-import { Component, createRef } from 'react';
+import { ReactNode, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { Portal } from '../portal';
 
-let mousePosition: any = null;
-
-document.querySelector('body').addEventListener('click', (e: MouseEvent) => {
-  mousePosition = {
-    x: e.clientX,
-    y: e.clientY,
-  };
-});
-
-class DialogElWrapper extends Component<any, any> {
-  rootRef = createRef<HTMLDivElement>();
-
-  onMaskClick() {
-    console.log('onclick mask');
-  }
-
-  render() {
-    const { visible, mask, children } = this.props;
-
-    return (
-      <div ref={this.rootRef} tabIndex={-1} className="zent-dialog-r-root">
-        {visible && mask && <div className="zent-dialog-r-backdrop" />}
-        <div className="zent-dialog-r-wrap" onClick={this.onMaskClick}>
-          {children}
-        </div>
-      </div>
-    );
-  }
+interface IDialogProps {
+  visible?: boolean;
+  onClose?: () => void;
+  title?: ReactNode;
+  footer?: ReactNode;
+  showMask?: boolean;
+  showCloseBtn?: boolean;
+  maskClosable?: boolean;
 }
 
-function DialogInnerEl({ children, onClose }: any) {
-  const dialogEl = React.useRef<HTMLDivElement>();
+export const Dialog = React.memo<IDialogProps>(props => {
+  const {
+    visible,
+    children,
+    title,
+    footer,
+    onClose,
+    showMask = true,
+    maskClosable = true,
+    showCloseBtn = true,
+  } = props;
 
-  const Closer = (
-    <button
-      type="button"
-      onClick={() => {
-        onClose();
-      }}
-    >
-      <div>close</div>
-    </button>
-  );
+  const closeDialog = useCallback(() => {
+    onClose && onClose();
+  }, [onClose]);
 
-  const resetTransformOrigin = () => {
-    if (
-      mousePosition &&
-      mousePosition.x >= 0 &&
-      mousePosition.y >= 0 &&
-      dialogEl &&
-      dialogEl.current.getBoundingClientRect
-    ) {
-      const { left: x, top: y } = dialogEl.current.getBoundingClientRect();
-      const origin = `${mousePosition.x - x}px ${mousePosition.y - y}px 0`;
-      const style = dialogEl.current.style;
-      ['Webkit', 'Moz', 'Ms', 'ms'].forEach(prefix => {
-        style[`${prefix}TransformOrigin` as any] = origin;
-      });
-      console.log('style: ', style);
-      style.transformOrigin = origin;
-    }
-  };
-
-  React.useLayoutEffect(() => {
-    resetTransformOrigin();
-  });
+  const onClickMask = useCallback(() => {
+    maskClosable && closeDialog();
+  }, [maskClosable, closeDialog]);
 
   return (
-    <div className={`zent-dialog-r`} ref={dialogEl}>
-      {Closer}
-      <div className="zent-dialog-r-body">{children}</div>
-    </div>
-  );
-}
-
-export class Dialog extends Component<any, any> {
-  static defaultProps = {
-    onClose() {},
-    visible: false,
-    className: '',
-    style: {},
-    title: '',
-    closeBtn: true,
-    mask: true,
-    maskClosable: true,
-    footer: null,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      prevOpen: props.visible,
-      exiting: false,
-    };
-  }
-
-  render() {
-    const { visible, mask, maskClosable, children, onClose } = this.props;
-
-    return (
-      // @ts-ignore
-      <Portal visible={visible}>
-        <DialogElWrapper mask={mask} maskClosable={maskClosable} visible={visible}>
+    <Portal visible={visible}>
+      <div className="dm-dialog-root">
+        {showMask && <div className="dm-dialog-mask" />}
+        <div className="dm-dialog-wrapper" onClick={onClickMask}>
           <CSSTransition
             appear
+            in={visible}
+            timeout={30000}
+            classNames="dm-zoom"
             mountOnEnter
             unmountOnExit
-            in={visible}
-            timeout={300}
-            classNames="zent-zoom"
           >
-            <DialogInnerEl
-              onClose={() => {
-                onClose();
-              }}
-            >
-              {children}
-              222
-            </DialogInnerEl>
+            <div className="dm-dialog" onClick={e => e.stopPropagation()}>
+              {title && <div className="dm-dialog-header">{title}</div>}
+              {showCloseBtn && (
+                <button className="dm-dialog-closebtn" onClick={closeDialog}>
+                  Close Dialogxx
+                </button>
+              )}
+              <div className="dm-dialog-body">{children}</div>
+              {footer && <div className="dm-dialog-footer">{footer}</div>}
+            </div>
           </CSSTransition>
-        </DialogElWrapper>
-      </Portal>
-    );
-  }
-}
+        </div>
+      </div>
+    </Portal>
+  );
+});
+
+Dialog.displayName = 'dm-Dialog';
 
 export default Dialog;

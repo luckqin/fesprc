@@ -1,6 +1,6 @@
-# deimon
+# fesprc
 
-🎃 deimon - 一套基于 React 的 Web 前端组件库
+🎃 fesprc - 一套基于 React 的 Web 前端组件库
 
 ### Feature
 
